@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import { spawn } from 'child_process';
+
 export type TailwindOptions = {
     twStylePath?: string;
     twPrefix?: string;
@@ -63,7 +64,8 @@ export default async function buildTailwindCSS(path = './', { twPrefix, twStyleP
     if (twPrefix) {
         await fs.writeFile(`${path}/tailwind.config.js`, `
         module.exports = {
-            prefix: 'tw-',
+            prefix: '${twPrefix}',
+            important: true
         };
     `, 'utf8');
     }
@@ -73,7 +75,7 @@ export default async function buildTailwindCSS(path = './', { twPrefix, twStyleP
         const proc = spawn('node', [
             tailwindBin,
             '--optimize',
-            '--input', `${path}/${TEMP_CSS}`,
+            '--input', `${path}/${TEMP_CSS}`
         ]);
 
         let css = '';
